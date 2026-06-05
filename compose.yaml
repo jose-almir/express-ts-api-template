@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: "postgres:latest"
+    environment:
+      - "POSTGRES_DB=doggi_db"
+      - "POSTGRES_PASSWORD=12345678"
+      - "POSTGRES_USER=admin"
+    ports:
+      - "5432:5432"

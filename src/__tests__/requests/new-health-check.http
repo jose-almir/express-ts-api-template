@@ -1,0 +1,9 @@
+POST http://localhost:3000/health HTTP/1.1
+content-type: application/json
+Authorization: Bearer my-token
+
+{
+    "name": "sample",
+    "url": "https://example.com",
+    "interval": 55
+}
