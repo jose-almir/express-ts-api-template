@@ -1,10 +1,11 @@
+import { PrismaClient } from "#generated/prisma/client.js";
 import { HealthCheckRepository } from "#shared/domain/repository/health-check.repository.js";
 
-import { prisma } from "./prisma-client.js";
-
 export class PrismaHealthCheckRepository implements HealthCheckRepository {
+  constructor(private readonly prisma: PrismaClient) {}
+
   async create(data: { interval: number; name: string; url: string }): Promise<void> {
-    await prisma.healthCheck.create({
+    await this.prisma.healthCheck.create({
       data: {
         interval: data.interval,
         name: data.name,
@@ -18,7 +19,7 @@ export class PrismaHealthCheckRepository implements HealthCheckRepository {
     page: number;
     search?: string;
   }): Promise<{ id: string; interval: number; name: string; url: string }[]> {
-    const records = await prisma.healthCheck.findMany({
+    const records = await this.prisma.healthCheck.findMany({
       skip: (params.page - 1) * params.limit,
       take: params.limit,
       where: params.search
@@ -36,7 +37,7 @@ export class PrismaHealthCheckRepository implements HealthCheckRepository {
   async findById(
     id: string,
   ): Promise<null | { id: string; interval: number; name: string; url: string }> {
-    const record = await prisma.healthCheck.findUnique({
+    const record = await this.prisma.healthCheck.findUnique({
       where: { id },
     });
 
