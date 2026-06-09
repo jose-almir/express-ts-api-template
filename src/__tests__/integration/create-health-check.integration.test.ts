@@ -6,10 +6,10 @@ import { loadEnv } from "#config/env.js";
 import { makePrismaClient } from "#shared/infrastructure/persistence/prisma-client.js";
 
 describe("Create Health Check", () => {
+  const env = loadEnv();
+
   it("should create a health check", async () => {
-    const env = loadEnv();
-    const prisma = makePrismaClient(env.DATABASE_URL);
-    const app = createApplication(prisma);
+    const app = createApplication(env);
 
     const response = await request(app).post("/health").send({
       interval: 60,
@@ -20,7 +20,6 @@ describe("Create Health Check", () => {
   });
 
   beforeEach(async () => {
-    const env = loadEnv();
     const prisma = makePrismaClient(env.DATABASE_URL);
     await prisma.healthCheck.deleteMany();
   });

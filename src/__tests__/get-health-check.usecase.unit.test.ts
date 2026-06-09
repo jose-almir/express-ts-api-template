@@ -1,9 +1,17 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { Logger } from "#config/logging.js";
 import { HealthCheckRepository } from "#shared/domain/repository/health-check.repository.js";
 import { GetHealthCheckUseCase } from "#shared/domain/usecase/get-health-check.usecase.js";
 
 describe("GetHealthCheckUseCase", () => {
+  const logger: Logger = {
+    debug: vi.fn(),
+    error: vi.fn(),
+    fatal: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+  };
   it("should return health check record when found", async () => {
     const repository: HealthCheckRepository = {
       create: vi.fn(),
@@ -15,7 +23,7 @@ describe("GetHealthCheckUseCase", () => {
         url: "https://example.com/health",
       }),
     };
-    const useCase = new GetHealthCheckUseCase(repository);
+    const useCase = new GetHealthCheckUseCase(repository, logger);
 
     const result = await useCase.execute({ id: "test-id" });
 
@@ -35,7 +43,7 @@ describe("GetHealthCheckUseCase", () => {
       findAll: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
     };
-    const useCase = new GetHealthCheckUseCase(repository);
+    const useCase = new GetHealthCheckUseCase(repository, logger);
 
     await expect(useCase.execute({ id: "non-existent-id" })).rejects.toThrow(Error);
   });
